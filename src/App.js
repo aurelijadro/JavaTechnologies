@@ -1,7 +1,7 @@
 import React from 'react';
-import ProductListComponent from './components/productListComponent/productListComponent';
-import SumPricesComponent from './components/sumPricesComponent/sumPricesComponent';
-import Product from './product/product';
+//import ProductListComponent from './components/productListComponent/productListComponent';
+import SelfDestructTimerComponent from './components/SelfDestructTimerComponent/SelfDestructTimerComponent';
+//import ProductAdministrationComponent from './components/productAdministrationComponent/productAdministrationComponent';
 import './App.css';
 
 
@@ -11,8 +11,7 @@ function App() {
 
   return (
     <div className="container mx-auto">
-
-      <ProductListComponent />
+      <SelfDestructTimerComponent />
     </div>
   );
 }

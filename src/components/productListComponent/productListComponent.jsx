@@ -5,6 +5,7 @@ import SumPricesComponent from '../sumPricesComponent/sumPricesComponent';
 class ProductListComponent extends React.Component {
     constructor() {
         super();
+
         this.state = {
             products: [
                 {
@@ -51,8 +52,21 @@ class ProductListComponent extends React.Component {
                 }
             ]
         }
+
     }
+
+    componentDidMount() {
+        console.log("component did mount");
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        console.log("getDerivedStateFromProps----------prevState:", prevState);
+        return null;
+    }
+
+
     render() {
+        console.log("Component rendered");
         var products = this.state.products.map(product => {
             return (<div className="col-3 mx-auto my-3" key={product.id}>
                 <ProductCardComponent product={product} />
