@@ -8,7 +8,7 @@ class ProductCardComponent extends React.Component {
         <img
           src={this.props.product.imageURL}
           className="card-img-top"
-          alt="{this.props.product.name}"
+          alt=""
         />
         <div className="card-body">
           <h5 className="card-title">{this.props.product.name}</h5>

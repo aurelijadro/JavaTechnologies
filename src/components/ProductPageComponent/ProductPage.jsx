@@ -26,7 +26,7 @@ export default function ProductPage(props) {
         <Link className="btn btn-primary" to="/">
           Back
         </Link>
-        <button className="btn btn-promary">Add to Cart</button>
+        <button className="btn btn-primary">Add to Cart</button>
       </div>
     </div>
   );

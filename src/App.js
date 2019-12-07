@@ -2,10 +2,11 @@ import React, { useContext, useState } from "react";
 import ProductListComponent from "./components/productListComponent/productListComponent";
 import SelfDestructTimerComponent from "./components/SelfDestructTimerComponent/SelfDestructTimerComponent";
 import ProductPage from "./components/ProductPageComponent/ProductPage";
-//import ProductAdministrationComponent from './components/productAdministrationComponent/productAdministrationComponent';
+import AdminPanel from "./components/AdminPanel";
+import ProductAdministrationComponent from "./components/productAdministrationComponent/productAdministrationComponent";
 import "./App.css";
 import { Nav } from "./components/navBarPresentationComponent/navBarPresentationComponent";
-import { Route } from "react-router";
+import { Switch, Route } from "react-router";
 import { AppDataContext } from "./context";
 
 // function ProductPage() {
@@ -74,13 +75,25 @@ function App() {
     <AppDataContext.Provider value={appData}>
       <div className="container mx-auto">
         <Nav />
-        <Route path="/" exact component={ProductListComponent} />
-        <Route path="/nav" exact component={SelfDestructTimerComponent} />
-        <Route path="/cart" exact children={<p>Cart</p>} />
-        <Route path="/products/:id" exact component={ProductPage} />
+        <Switch>
+          <Route path="/" exact component={ProductListComponent} />
+          <Route path="/products" exact component={ProductListComponent} />
+          <Route path="/nav" exact component={SelfDestructTimerComponent} />
+          <Route path="/cart" exact children={<p>Cart</p>} />
+          <Route path="/products/:id" exact component={ProductPage} />
+          <Route path="/admin" exact component={AdminPanel} />
+          <Route
+            path="/admin/products/new"
+            exact
+            component={ProductAdministrationComponent}
+          />
+          <Route
+            path="/admin/products/:id"
+            exact
+            component={ProductAdministrationComponent}
+          />
+        </Switch>
       </div>
-
-      {/* išfltruoti vieną produkto objektą pagal id iš visų produktų sąrašo */}
     </AppDataContext.Provider>
   );
 }
