@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { AppDataContext } from "../../context";
 import { Link, Redirect } from "react-router-dom";
 
@@ -11,8 +11,6 @@ export default function ProductPage(props) {
   if (!product) {
     return <Redirect to="/" />;
   }
-
-  const addToCart = function() {};
 
   return (
     <div className="container row">
@@ -30,7 +28,10 @@ export default function ProductPage(props) {
         <Link className="btn btn-light" to="/">
           Back
         </Link>
-        <button className="btn btn-info mx-2" onClick={addToCart}>
+        <button
+          className="btn btn-info mx-2"
+          onClick={() => appData.addCartItem(product.id)}
+        >
           Add to Cart
         </button>
       </div>

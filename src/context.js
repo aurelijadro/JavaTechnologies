@@ -6,7 +6,8 @@ export const AppDataContext = React.createContext({
   login: () => {},
   products: [],
   setProducts: () => {},
-  discardCartItem: () => {}
+  discardCartItem: () => {},
+  addCartItem: () => {}
 });
 
 export function useMyData() {

@@ -79,6 +79,8 @@ function App() {
   const setUser = (name, delta) =>
     setUsers(prev => prev.map(u => (u.username === name ? delta(u) : u)));
   const setCurrentUser = delta => setUser(currentUserName, delta);
+  const setCurrentUserCart = delta =>
+    setCurrentUser(u => ({ ...u, cart: delta(u.cart) }));
 
   const [currentUserName, setCurrentUserName] = useState("john");
 
@@ -87,6 +89,17 @@ function App() {
       ? users.find(u => u.username === currentUserName).cart
       : [],
     currentUserName: currentUserName,
+    addCartItem: productId => {
+      setCurrentUserCart(prev =>
+        prev.some(item => item.productId === productId)
+          ? prev.map(item =>
+              item.productId === productId
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            )
+          : prev.concat([{ productId: productId, quantity: 1 }])
+      );
+    },
     discardCartItem: productId => {
       setCurrentUser(prev => {
         return {
