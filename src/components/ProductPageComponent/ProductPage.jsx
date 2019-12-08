@@ -1,15 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppDataContext } from "../../context";
 import { Link, Redirect } from "react-router-dom";
 
 export default function ProductPage(props) {
   const appData = React.useContext(AppDataContext);
+
   const product = appData.products.find(
     product => String(product.id) === props.match.params.id
   );
   if (!product) {
     return <Redirect to="/" />;
   }
+
+  const addToCart = function() {};
+
   return (
     <div className="container row">
       <div className="col-4">
@@ -23,10 +27,12 @@ export default function ProductPage(props) {
         <h1>{product.title}</h1>
         <h4>{product.description}</h4>
         <h4>Price: {product.price}</h4>
-        <Link className="btn btn-primary" to="/">
+        <Link className="btn btn-light" to="/">
           Back
         </Link>
-        <button className="btn btn-primary">Add to Cart</button>
+        <button className="btn btn-info mx-2" onClick={addToCart}>
+          Add to Cart
+        </button>
       </div>
     </div>
   );

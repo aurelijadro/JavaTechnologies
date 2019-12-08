@@ -4,6 +4,7 @@ import SelfDestructTimerComponent from "./components/SelfDestructTimerComponent/
 import ProductPage from "./components/ProductPageComponent/ProductPage";
 import AdminPanel from "./components/AdminPanel";
 import ProductAdministrationComponent from "./components/productAdministrationComponent/productAdministrationComponent";
+import Cart from "./components/Cart";
 import "./App.css";
 import { Nav } from "./components/navBarPresentationComponent/navBarPresentationComponent";
 import { Switch, Route } from "react-router";
@@ -75,14 +76,25 @@ function App() {
       ]
     }
   ]);
+  const setUser = (name, delta) =>
+    setUsers(prev => prev.map(u => (u.username === name ? delta(u) : u)));
+  const setCurrentUser = delta => setUser(currentUserName, delta);
 
-  const [currentUserName, setCurrentUserName] = useState("");
+  const [currentUserName, setCurrentUserName] = useState("john");
 
   const appData = {
     cartItems: currentUserName
       ? users.find(u => u.username === currentUserName).cart
       : [],
     currentUserName: currentUserName,
+    discardCartItem: productId => {
+      setCurrentUser(prev => {
+        return {
+          ...prev,
+          cart: prev.cart.filter(item => item.productId !== productId)
+        };
+      });
+    },
     login: username => {
       setCurrentUserName(username);
       setUsers(function(prev) {
@@ -112,7 +124,7 @@ function App() {
           <Route path="/" exact component={ProductListComponent} />
           <Route path="/products" exact component={ProductListComponent} />
           <Route path="/nav" exact component={SelfDestructTimerComponent} />
-          <Route path="/cart" exact children={<p>Cart</p>} />
+          <Route path="/cart" exact component={Cart} />
           <Route path="/products/:id" exact component={ProductPage} />
           <Route path="/admin" exact component={AdminPanel} />
           <Route
