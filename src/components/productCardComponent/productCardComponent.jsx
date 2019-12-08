@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 class ProductCardComponent extends React.Component {
   render() {
     return (
-      <div className="card mx-2" style={{ width: "15rem" }}>
+      <div className="card mx-2" style={{ width: "13rem" }}>
         <img
           src={this.props.product.imageURL}
-          className="card-img-top"
+          className="card-img-top img-fluid"
           alt=""
         />
         <div className="card-body">

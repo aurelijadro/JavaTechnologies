@@ -1,23 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
-// const Nav = function(){}
+import Login from "../Login";
 
 export const Nav = function(props) {
   return (
-    <nav>
-      <ul className="nav">
-        <li className="nav-item">
+    <nav className="my-2">
+      <ul className="nav row">
+        <li className="nav-item col-2">
           <Link className="nav-link active" to="/">
             Home
           </Link>
         </li>
-        <li className="nav-item">
+        <li className="nav-item col-2">
           <Link className="nav-link" to="/admin">
             Admin
           </Link>
         </li>
-        <li className="nav-item">
+        <Login />
+        <li className="nav-item col-2">
           <Link className="nav-link" to="/cart">
             Cart
           </Link>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import ProductListComponent from "./components/productListComponent/productListComponent";
 import SelfDestructTimerComponent from "./components/SelfDestructTimerComponent/SelfDestructTimerComponent";
 import ProductPage from "./components/ProductPageComponent/ProductPage";
