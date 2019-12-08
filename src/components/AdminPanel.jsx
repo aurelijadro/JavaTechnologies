@@ -5,10 +5,10 @@ import { AppDataContext } from "../context";
 export default function AdminPanel() {
   const appData = React.useContext(AppDataContext);
   const productList = appData.products.map((product, index) => (
-    <div className="row">
+    <div className="row" key={product.id}>
       <div className="col-2">{index + 1}</div>
       <div className="col-2">
-        <img src={product.imageURL} className="img-fluid" alt={product.name} />
+        <img src={product.imageURL} className="img-fluid" alt="" />
       </div>
       <Link className="col-6" to={`/admin/products/${product.id}`}>
         {product.name}

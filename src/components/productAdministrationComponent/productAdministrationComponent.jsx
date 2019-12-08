@@ -26,6 +26,7 @@ class ProductAdministrationComponent extends React.Component {
       }
       this.state = {
         mode: "edit",
+        id: product.id,
         title: product.name,
         imageURL: product.imageURL,
         price: product.price,
@@ -43,14 +44,14 @@ class ProductAdministrationComponent extends React.Component {
   handleDescriptionChange = event =>
     this.setState({ description: event.target.value });
 
-  handleUpdate = event => {
+  saveProduct = () => {
     this.context.setProducts(prev =>
       prev.map(product =>
-        product.id !== parseInt(this.props.match.params.id)
+        product.id !== this.state.id
           ? product
           : {
+              ...product,
               name: this.state.title,
-              id: this.props.match.params.id,
               price: parseFloat(this.state.price),
               description: this.state.description,
               quantity: parseInt(this.state.quantity),
@@ -58,17 +59,10 @@ class ProductAdministrationComponent extends React.Component {
             }
       )
     );
-    //event.preventDefault();
+    this.props.history.push("/admin");
   };
-  handleSubmit = event => {
-    console.log(
-      this.state.title,
-      this.state.description,
-      this.state.price,
-      this.state.quantity,
-      this.state.imageURL
-    );
 
+  createProduct = () => {
     this.context.setProducts(prev =>
       prev.concat([
         {
@@ -81,17 +75,17 @@ class ProductAdministrationComponent extends React.Component {
         }
       ])
     );
+    this.props.history.push("/admin");
+  };
 
-    // sukurti nauja produkta app state'e
+  handleSubmit = event => {
+    event.preventDefault();
 
-    this.setState({
-      title: "",
-      imageURL: "",
-      price: "",
-      quantity: "",
-      description: ""
-    });
-    // event.preventDefault();
+    if (this.state.mode === "edit") {
+      this.saveProduct();
+    } else {
+      this.createProduct();
+    }
   };
 
   render() {
@@ -101,84 +95,88 @@ class ProductAdministrationComponent extends React.Component {
           <div className="col-4">
             <form onSubmit={this.handleSubmit}>
               <div className="form-group">
-                <label htmlFor="title">Title:</label>
-                <input
-                  type="text"
-                  id="title"
-                  required="required"
-                  className="form-control"
-                  value={this.state.title}
-                  onChange={this.handleTitleChange}
-                />
+                <label>
+                  Title:
+                  <input
+                    type="text"
+                    required="required"
+                    className="form-control"
+                    value={this.state.title}
+                    onChange={this.handleTitleChange}
+                  />
+                </label>
               </div>
               <div className="form-group">
-                <label htmlFor="imageurl">Image URL:</label>
-                <input
-                  type="url"
-                  required="required"
-                  id="imageurl"
-                  className="form-control"
-                  value={this.state.imageURL}
-                  onChange={this.handleURLChange}
-                />
+                <label>
+                  Image URL:
+                  <input
+                    type="url"
+                    required="required"
+                    className="form-control"
+                    value={this.state.imageURL}
+                    onChange={this.handleURLChange}
+                  />
+                </label>
               </div>
               <div className="form-group">
-                <label htmlFor="price">Price:</label>
-                <input
-                  type="text"
-                  id="price"
-                  required="required"
-                  className="form-control"
-                  value={this.state.price}
-                  onChange={this.handlePriceChange}
-                />
+                <label>
+                  Price:
+                  <input
+                    type="text"
+                    required="required"
+                    className="form-control"
+                    value={this.state.price}
+                    onChange={this.handlePriceChange}
+                  />
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label>
+                  Price:
+                  <input
+                    type="text"
+                    required="required"
+                    className="form-control"
+                    value={this.state.price}
+                    onChange={this.handlePriceChange}
+                  />
+                </label>
               </div>
               <div className="form-group">
-                <label htmlFor="quantity">Quantity:</label>
-                <input
-                  type="number"
-                  id="quantity"
-                  required="required"
-                  className="form-control"
-                  value={this.state.quantity}
-                  onChange={this.handleQuantityChange}
-                />
+                <label>
+                  Quantity:
+                  <input
+                    type="number"
+                    required="required"
+                    className="form-control"
+                    value={this.state.quantity}
+                    onChange={this.handleQuantityChange}
+                  />
+                </label>
               </div>
               <div className="form-group">
-                <label htmlFor="description">Description</label>
-                <input
-                  type="text"
-                  id="description"
-                  required="required"
-                  className="form-control"
-                  value={this.state.description}
-                  onChange={this.handleDescriptionChange}
-                />
+                <label>
+                  Description
+                  <input
+                    type="text"
+                    id="description"
+                    required="required"
+                    className="form-control"
+                    value={this.state.description}
+                    onChange={this.handleDescriptionChange}
+                  />
+                </label>
               </div>
-              {this.state.mode === "create" ? (
-                <Link
-                  type="submit"
-                  className="btn btn-info"
-                  value="Save"
-                  onClick={this.handleSubmit}
-                  to="/admin"
-                >
-                  Save
-                </Link>
-              ) : (
-                <Link
-                  type="submit"
-                  className="btn btn-info"
-                  value="Save"
-                  onClick={this.handleUpdate}
-                  to="/admin"
-                >
-                  Save
-                </Link>
-              )}
-              <Link className="btn btn-light mx-2" to="/admin">
-                Cancel
-              </Link>
+              <button type="submit" className="btn btn-info">
+                Save
+              </button>
+              <button
+                className="btn btn-light mx-2"
+                onClick={() => this.props.history.push("/admin")}
+              >
+                Discard
+              </button>
             </form>
           </div>
         </div>
