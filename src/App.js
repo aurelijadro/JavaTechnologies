@@ -66,7 +66,35 @@ function App() {
     }
   ]);
 
+  const [users, setUsers] = useState([
+    {
+      username: "john",
+      cart: [
+        { productId: 10111, quantity: 1 },
+        { productId: 66666666, quantity: 6 }
+      ]
+    }
+  ]);
+
+  const [currentUserName, setCurrentUserName] = useState("");
+
   const appData = {
+    cartItems: currentUserName
+      ? users.find(u => u.username === currentUserName).cart
+      : [],
+    currentUserName: currentUserName,
+    login: username => {
+      setCurrentUserName(username);
+      setUsers(function(prev) {
+        if (prev.some(u => u.username === username)) return prev;
+        return prev.concat([
+          {
+            username: username,
+            cart: []
+          }
+        ]);
+      });
+    },
     products: products,
     setProducts: setProducts
   };
@@ -74,6 +102,11 @@ function App() {
   return (
     <AppDataContext.Provider value={appData}>
       <div className="container mx-auto">
+        {currentUserName ? (
+          <div>Hello, {currentUserName}</div>
+        ) : (
+          "Not logged in yet"
+        )}
         <Nav />
         <Switch>
           <Route path="/" exact component={ProductListComponent} />
