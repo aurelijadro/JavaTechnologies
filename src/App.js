@@ -8,6 +8,7 @@ import ProductAdministrationComponent from "./components/productAdministrationCo
 import Cart from "./components/Cart";
 import "./App.css";
 import { Nav } from "./components/navBarPresentationComponent/navBarPresentationComponent";
+import { serverProductToClientProduct } from "./model/products";
 import { Switch, Route } from "react-router";
 import { AppDataContext } from "./context";
 
@@ -17,58 +18,7 @@ import { AppDataContext } from "./context";
 // }
 
 function App() {
-  const [fetchingProducts, setFetchingProducts] = useState(false);
-
-  const [products, setProducts] = useState([
-    {
-      name: "Kitty",
-      id: 10111,
-      price: 99.99,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 1,
-      imageURL: "https://robohash.org/10111?set=set4"
-    },
-    {
-      name: "Mau",
-      id: 2402,
-      price: 150.55,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 15,
-      imageURL: "https://robohash.org/2402?set=set4"
-    },
-    {
-      name: "Shadow",
-      id: 66666666,
-      price: 450,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 5,
-      imageURL: "https://robohash.org/66666666?set=set4"
-    },
-    {
-      name: "Whiskers",
-      id: 933512,
-      price: 113,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 3,
-      imageURL: "https://robohash.org/933512?set=set4"
-    },
-    {
-      name: "Panda",
-      id: 61166,
-      price: 220,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 3,
-      imageURL: "https://robohash.org/61166?set=set4"
-    },
-    {
-      name: "Dragon",
-      id: 103003,
-      price: 345,
-      description: "Fluufy kitty! mau mau mau mau mau",
-      quantity: 2,
-      imageURL: "https://robohash.org/103003?set=set4"
-    }
-  ]);
+  const [products, setProducts] = useState("loading");
 
   const [users, setUsers] = useState([
     {
@@ -88,17 +38,12 @@ function App() {
   const [currentUserName, setCurrentUserName] = useState("john");
 
   useEffect(function() {
-    setFetchingProducts(true);
-    axios
-      .get("https://itpro2017.herokuapp.com/api/products")
-      .then(response => {
-        // setProducts
-        setFetchingProducts(false);
-        console.log("n", response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    axios.get("http://localhost:8080/api/products").then(response => {
+      if (response.status < 200 || 300 <= response.status)
+        throw new Error(`response code ${response.status}`);
+      const products = response.data;
+      setProducts(products.map(serverProductToClientProduct));
+    });
   }, []);
 
   const appData = {

@@ -11,12 +11,25 @@ import { AppDataContext } from "../../context";
 
 export default function ProductListComponent() {
   const appData = React.useContext(AppDataContext);
-  const products = appData.products.map(product => {
-    return (
-      <div className="col-3 mx-auto my-3" key={product.id}>
-        <ProductCardComponent product={product} />
-      </div>
-    );
-  });
-  return <div className="row card-deck">{products}</div>;
+  const products = appData.products;
+  return (
+    <div className="row">
+      {products === "loading" ? (
+        "Products are loading, please wait..."
+      ) : (
+        <div>
+          <p>We sell amazing products, even {products.length} of them!</p>
+          <div className="card-deck">
+            {products.map(product => {
+              return (
+                <div className="col-3 mx-auto my-3" key={product.id}>
+                  <ProductCardComponent product={product} />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
