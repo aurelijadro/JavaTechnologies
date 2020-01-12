@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import ProductListComponent from "./components/productListComponent/productListComponent";
 import SelfDestructTimerComponent from "./components/SelfDestructTimerComponent/SelfDestructTimerComponent";
 import ProductPage from "./components/ProductPageComponent/ProductPage";
@@ -16,6 +17,8 @@ import { AppDataContext } from "./context";
 // }
 
 function App() {
+  const [fetchingProducts, setFetchingProducts] = useState(false);
+
   const [products, setProducts] = useState([
     {
       name: "Kitty",
@@ -84,6 +87,20 @@ function App() {
 
   const [currentUserName, setCurrentUserName] = useState("john");
 
+  useEffect(function() {
+    setFetchingProducts(true);
+    axios
+      .get("https://itpro2017.herokuapp.com/api/products")
+      .then(response => {
+        // setProducts
+        setFetchingProducts(false);
+        console.log("n", response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
   const appData = {
     cartItems: currentUserName
       ? users.find(u => u.username === currentUserName).cart
@@ -127,11 +144,6 @@ function App() {
   return (
     <AppDataContext.Provider value={appData}>
       <div className="container mx-auto">
-        {currentUserName ? (
-          <div>Hello, {currentUserName}</div>
-        ) : (
-          "Not logged in yet"
-        )}
         <Nav />
         <Switch>
           <Route path="/" exact component={ProductListComponent} />
