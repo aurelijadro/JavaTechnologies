@@ -11,12 +11,12 @@ export const Nav = function(props) {
   const productsInCartCount = sum(cartItems.map(i => i.quantity));
   return (
     <nav className="my-2">
-      <ul className="nav row">
-        <li className="nav-item col-4">
+      <ul className="nav row ">
+        <li className="nav-item col-2">
           <Hello></Hello>
         </li>
         <li className="nav-item col-2">
-          <Link className="nav-link active" to="/">
+          <Link className="nav-link" to="/">
             Home
           </Link>
         </li>
@@ -25,7 +25,9 @@ export const Nav = function(props) {
             Admin
           </Link>
         </li>
-        <Login />
+        <li className="col-4">
+          <Login />
+        </li>
         <li className="nav-item col-2">
           <Link className="nav-link" to="/cart">
             {productsInCartCount} in cart

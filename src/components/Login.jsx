@@ -11,7 +11,7 @@ export default function Login() {
   };
 
   return (
-    <form className="col-6" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
       <div className="row">
         <input
           type="text"
