@@ -18,41 +18,33 @@ class ProductAdministrationComponent extends React.Component {
       quantity: "",
       description: ""
     };
-
-    // const product = this.context.products.find(
-    //   product => String(product.id) === this.props.match.params.id
-    // );
-    // if (!product) {
-    //   throw new Error("Neradau produkto");
-    // }
-    // this.state = {
-    //   mode: "edit",
-    //   id: product.id,
-    //   title: product.name,
-    //   imageURL: product.imageURL,
-    //   price: product.price,
-    //   quantity: product.quantity,
-    //   description: product.description
-    // };
-    // console.log("else state: ", this.state);
   }
 
   componentDidMount() {
-    Axios.get(
-      `http://localhost:8080/api/products/${this.props.match.params.id}`
-    ).then(response => {
-      if (response.status < 200 || 300 <= response.status)
-        throw new Error(`response code ${response.status}`);
-      const product = serverProductToClientProduct(response.data);
-      console.log("product from axios: ", product);
-      this.setState({
-        mode: "edit",
-        title: product.name,
-        imageURL: product.imageURL,
-        price: product.price,
-        quantity: product.quantity,
-        description: product.description
-      });
+    this.productsMayHaveLoaded();
+  }
+
+  componentDidUpdate() {
+    this.productsMayHaveLoaded();
+  }
+
+  productsMayHaveLoaded() {
+    if (this.context.products === "loading") return;
+    if (this.state.mode !== "edit-loading") return;
+    const product = this.context.products.find(
+      product => String(product.id) === this.props.match.params.id
+    );
+    if (!product) {
+      throw new Error("Neradau produkto");
+    }
+    this.setState({
+      mode: "edit",
+      id: product.id,
+      title: product.name,
+      imageURL: product.imageURL,
+      price: product.price,
+      quantity: product.quantity,
+      description: product.description
     });
   }
 
