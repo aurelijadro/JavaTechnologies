@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductListComponent from "./components/productListComponent/productListComponent";
-import SelfDestructTimerComponent from "./components/SelfDestructTimerComponent/SelfDestructTimerComponent";
 import ProductPage from "./components/ProductPageComponent/ProductPage";
 import AdminPanel from "./components/AdminPanel";
 import ProductAdministrationComponent from "./components/productAdministrationComponent/productAdministrationComponent";
@@ -24,8 +23,8 @@ function App() {
     {
       username: "john",
       cart: [
-        { productId: 10111, quantity: 1 },
-        { productId: 66666666, quantity: 6 }
+        { productId: 1, quantity: 1 },
+        { productId: 2, quantity: 1 }
       ]
     }
   ]);
@@ -93,7 +92,6 @@ function App() {
         <Switch>
           <Route path="/" exact component={ProductListComponent} />
           <Route path="/products" exact component={ProductListComponent} />
-          <Route path="/nav" exact component={SelfDestructTimerComponent} />
           <Route path="/cart" exact component={Cart} />
           <Route path="/products/:id" exact component={ProductPage} />
           <Route path="/admin" exact component={AdminPanel} />

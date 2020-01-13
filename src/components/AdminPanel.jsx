@@ -4,7 +4,11 @@ import { AppDataContext } from "../context";
 
 export default function AdminPanel() {
   const appData = React.useContext(AppDataContext);
-  const productList = appData.products.map((product, index) => (
+  const products = appData.products;
+
+  if (products === "loading") return <div>Loading...</div>;
+
+  const productList = products.map((product, index) => (
     <div className="row" key={product.id}>
       <div className="col-2">{index + 1}</div>
       <div className="col-2">

@@ -1,5 +1,7 @@
 import React from "react";
 import { AppDataContext } from "../../context";
+import Axios from "axios";
+import { serverProductToClientProduct } from "../../model/products";
 
 class ProductAdministrationComponent extends React.Component {
   static contextType = AppDataContext;
@@ -7,32 +9,51 @@ class ProductAdministrationComponent extends React.Component {
   constructor(props, context) {
     super(props, context);
 
-    if (props.match.path === "/admin/products/new") {
-      this.state = {
-        mode: "create",
-        title: "",
-        imageURL: "",
-        price: "",
-        quantity: "",
-        description: ""
-      };
-    } else {
-      const product = this.context.products.find(
-        product => String(product.id) === this.props.match.params.id
-      );
-      if (!product) {
-        throw new Error("Neradau produkto");
-      }
-      this.state = {
+    const isCreateMode = props.match.path === "/admin/products/new";
+    this.state = {
+      mode: isCreateMode ? "create" : "edit-loading",
+      title: "",
+      imageURL: "",
+      price: "",
+      quantity: "",
+      description: ""
+    };
+
+    // const product = this.context.products.find(
+    //   product => String(product.id) === this.props.match.params.id
+    // );
+    // if (!product) {
+    //   throw new Error("Neradau produkto");
+    // }
+    // this.state = {
+    //   mode: "edit",
+    //   id: product.id,
+    //   title: product.name,
+    //   imageURL: product.imageURL,
+    //   price: product.price,
+    //   quantity: product.quantity,
+    //   description: product.description
+    // };
+    // console.log("else state: ", this.state);
+  }
+
+  componentDidMount() {
+    Axios.get(
+      `http://localhost:8080/api/products/${this.props.match.params.id}`
+    ).then(response => {
+      if (response.status < 200 || 300 <= response.status)
+        throw new Error(`response code ${response.status}`);
+      const product = serverProductToClientProduct(response.data);
+      console.log("product from axios: ", product);
+      this.setState({
         mode: "edit",
-        id: product.id,
         title: product.name,
         imageURL: product.imageURL,
         price: product.price,
         quantity: product.quantity,
         description: product.description
-      };
-    }
+      });
+    });
   }
 
   handleTitleChange = event => this.setState({ title: event.target.value });
@@ -44,36 +65,71 @@ class ProductAdministrationComponent extends React.Component {
     this.setState({ description: event.target.value });
 
   saveProduct = () => {
-    this.context.setProducts(prev =>
-      prev.map(product =>
-        product.id !== this.state.id
-          ? product
-          : {
-              ...product,
-              name: this.state.title,
-              price: parseFloat(this.state.price),
-              description: this.state.description,
-              quantity: parseInt(this.state.quantity),
-              imageURL: this.state.imageURL
-            }
-      )
+    // this.context.setProducts(prev =>
+    //   prev.map(product =>
+    //     product.id !== this.state.id
+    //       ? product
+    //       : {
+    //           ...product,
+    //           name: this.state.title,
+    //           price: parseFloat(this.state.price),
+    //           description: this.state.description,
+    //           quantity: parseInt(this.state.quantity),
+    //           imageURL: this.state.imageURL
+    //         }
+    //   )
+    // );
+
+    Axios.put(
+      `http://localhost:8080/api/products/${this.props.match.params.id}`,
+      {
+        title: this.state.title,
+        price: parseFloat(this.state.price),
+        description: this.state.description,
+        quantity: parseInt(this.state.quantity),
+        image: this.state.imageURL
+      }
     );
+
+    // Axios.get("http://localhost:8080/api/products").then(response => {
+    //   if (response.status < 200 || 300 <= response.status)
+    //     throw new Error(`response code ${response.status}`);
+    //   const products = response.data;
+    //   this.context.setProducts(products.map(serverProductToClientProduct));
+    // });
+
     this.props.history.push("/admin");
   };
 
   createProduct = () => {
-    this.context.setProducts(prev =>
-      prev.concat([
-        {
-          name: this.state.title,
-          id: Math.floor(1000000 * Math.random()),
-          price: parseFloat(this.state.price),
-          description: this.state.description,
-          quantity: parseInt(this.state.quantity),
-          imageURL: this.state.imageURL
-        }
-      ])
-    );
+    // this.context.setProducts(prev =>
+    //   prev.concat([
+    //     {
+    //       name: this.state.title,
+    //       id: Math.floor(1000000 * Math.random()),
+    //       price: parseFloat(this.state.price),
+    //       description: this.state.description,
+    //       quantity: parseInt(this.state.quantity),
+    //       imageURL: this.state.imageURL
+    //     }
+    //   ])
+    // );
+
+    Axios.post("http://localhost:8080/api/products", {
+      title: this.state.title,
+      price: parseFloat(this.state.price),
+      description: this.state.description,
+      quantity: parseInt(this.state.quantity),
+      image: this.state.imageURL
+    });
+
+    // Axios.get("http://localhost:8080/api/products").then(response => {
+    //   if (response.status < 200 || 300 <= response.status)
+    //     throw new Error(`response code ${response.status}`);
+    //   const products = response.data;
+    //   this.context.setProducts(products.map(serverProductToClientProduct));
+    // });
+
     this.props.history.push("/admin");
   };
 
@@ -82,12 +138,24 @@ class ProductAdministrationComponent extends React.Component {
 
     if (this.state.mode === "edit") {
       this.saveProduct();
-    } else {
+    } else if (this.state.mode === "create") {
       this.createProduct();
+    } else if (this.state.mode === "edit-loading") {
+      throw new Error("Not supposed to be possible to submit in edit-loading");
+    } else {
+      throw new Error(`Unfamiliar mode ${this.state.mode}`);
     }
   };
 
   render() {
+    if (this.state.mode === "edit-loading") {
+      return (
+        <div className="container">
+          <p>Preparing the edit screen...</p>
+        </div>
+      );
+    }
+
     return (
       <div className="container">
         <div className="row">
@@ -117,19 +185,6 @@ class ProductAdministrationComponent extends React.Component {
                   />
                 </label>
               </div>
-              <div className="form-group">
-                <label>
-                  Price:
-                  <input
-                    type="text"
-                    required="required"
-                    className="form-control"
-                    value={this.state.price}
-                    onChange={this.handlePriceChange}
-                  />
-                </label>
-              </div>
-
               <div className="form-group">
                 <label>
                   Price:
