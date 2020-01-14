@@ -4,8 +4,11 @@ import { Link, Redirect } from "react-router-dom";
 
 export default function ProductPage(props) {
   const appData = React.useContext(AppDataContext);
+  const products = appData.products;
 
-  const product = appData.products.find(
+  if (products === "loading") return "Loading";
+
+  const product = products.find(
     product => String(product.id) === props.match.params.id
   );
   if (!product) {

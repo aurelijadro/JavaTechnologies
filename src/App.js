@@ -19,6 +19,15 @@ import { AppDataContext } from "./context";
 function App() {
   const [products, setProducts] = useState("loading");
 
+  const refreshProducts = () => {
+    axios.get("http://localhost:8080/api/products").then(response => {
+      if (response.status < 200 || 300 <= response.status)
+        throw new Error(`response code ${response.status}`);
+      const products = response.data;
+      setProducts(products.map(serverProductToClientProduct));
+    });
+  };
+
   const [users, setUsers] = useState([
     {
       username: "john",
@@ -36,14 +45,7 @@ function App() {
 
   const [currentUserName, setCurrentUserName] = useState("john");
 
-  useEffect(function() {
-    axios.get("http://localhost:8080/api/products").then(response => {
-      if (response.status < 200 || 300 <= response.status)
-        throw new Error(`response code ${response.status}`);
-      const products = response.data;
-      setProducts(products.map(serverProductToClientProduct));
-    });
-  }, []);
+  useEffect(refreshProducts, []);
 
   const appData = {
     cartItems: currentUserName
@@ -82,6 +84,7 @@ function App() {
       });
     },
     products: products,
+    refreshProducts: refreshProducts,
     setProducts: setProducts
   };
 

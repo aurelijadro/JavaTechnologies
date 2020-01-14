@@ -84,16 +84,9 @@ class ProductAdministrationComponent extends React.Component {
         quantity: parseInt(this.state.quantity),
         image: this.state.imageURL
       }
-    ).then(() => {
-      // Data sync strategy through sync with server state
-      Axios.get("http://localhost:8080/api/products").then(response => {
-        if (response.status < 200 || 300 <= response.status)
-          throw new Error(`response code ${response.status}`);
-        const products = response.data;
-        this.context.setProducts(products.map(serverProductToClientProduct));
-        this.props.history.push("/admin");
-      });
-    });
+    )
+      .then(this.context.refreshProducts)
+      .then(() => this.props.history.push("/admin"));
   };
 
   createProduct = () => {
@@ -116,7 +109,9 @@ class ProductAdministrationComponent extends React.Component {
       description: this.state.description,
       quantity: parseInt(this.state.quantity),
       image: this.state.imageURL
-    });
+    })
+      .then(this.context.refreshProducts)
+      .then(() => this.props.history.push("/admin"));
 
     // Axios.get("http://localhost:8080/api/products").then(response => {
     //   if (response.status < 200 || 300 <= response.status)
@@ -124,8 +119,6 @@ class ProductAdministrationComponent extends React.Component {
     //   const products = response.data;
     //   this.context.setProducts(products.map(serverProductToClientProduct));
     // });
-
-    this.props.history.push("/admin");
   };
 
   handleSubmit = event => {
