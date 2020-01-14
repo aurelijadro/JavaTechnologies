@@ -57,6 +57,7 @@ class ProductAdministrationComponent extends React.Component {
     this.setState({ description: event.target.value });
 
   saveProduct = () => {
+    // Optimistic UI
     // this.context.setProducts(prev =>
     //   prev.map(product =>
     //     product.id !== this.state.id
@@ -72,6 +73,8 @@ class ProductAdministrationComponent extends React.Component {
     //   )
     // );
 
+    this.setState({ mode: "edit-saving" });
+
     Axios.put(
       `http://localhost:8080/api/products/${this.props.match.params.id}`,
       {
@@ -81,16 +84,16 @@ class ProductAdministrationComponent extends React.Component {
         quantity: parseInt(this.state.quantity),
         image: this.state.imageURL
       }
-    );
-
-    // Axios.get("http://localhost:8080/api/products").then(response => {
-    //   if (response.status < 200 || 300 <= response.status)
-    //     throw new Error(`response code ${response.status}`);
-    //   const products = response.data;
-    //   this.context.setProducts(products.map(serverProductToClientProduct));
-    // });
-
-    this.props.history.push("/admin");
+    ).then(() => {
+      // Data sync strategy through sync with server state
+      Axios.get("http://localhost:8080/api/products").then(response => {
+        if (response.status < 200 || 300 <= response.status)
+          throw new Error(`response code ${response.status}`);
+        const products = response.data;
+        this.context.setProducts(products.map(serverProductToClientProduct));
+        this.props.history.push("/admin");
+      });
+    });
   };
 
   createProduct = () => {
@@ -146,6 +149,10 @@ class ProductAdministrationComponent extends React.Component {
           <p>Preparing the edit screen...</p>
         </div>
       );
+    }
+
+    if (this.state.mode === "edit-saving") {
+      return <div>Saving changes...</div>;
     }
 
     return (
