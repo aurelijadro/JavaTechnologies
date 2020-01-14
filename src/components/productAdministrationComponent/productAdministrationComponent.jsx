@@ -1,7 +1,6 @@
 import React from "react";
 import { AppDataContext } from "../../context";
 import Axios from "axios";
-import { serverProductToClientProduct } from "../../model/products";
 
 class ProductAdministrationComponent extends React.Component {
   static contextType = AppDataContext;
@@ -57,22 +56,6 @@ class ProductAdministrationComponent extends React.Component {
     this.setState({ description: event.target.value });
 
   saveProduct = () => {
-    // Optimistic UI
-    // this.context.setProducts(prev =>
-    //   prev.map(product =>
-    //     product.id !== this.state.id
-    //       ? product
-    //       : {
-    //           ...product,
-    //           name: this.state.title,
-    //           price: parseFloat(this.state.price),
-    //           description: this.state.description,
-    //           quantity: parseInt(this.state.quantity),
-    //           imageURL: this.state.imageURL
-    //         }
-    //   )
-    // );
-
     this.setState({ mode: "edit-saving" });
 
     Axios.put(
@@ -90,19 +73,6 @@ class ProductAdministrationComponent extends React.Component {
   };
 
   createProduct = () => {
-    // this.context.setProducts(prev =>
-    //   prev.concat([
-    //     {
-    //       name: this.state.title,
-    //       id: Math.floor(1000000 * Math.random()),
-    //       price: parseFloat(this.state.price),
-    //       description: this.state.description,
-    //       quantity: parseInt(this.state.quantity),
-    //       imageURL: this.state.imageURL
-    //     }
-    //   ])
-    // );
-
     Axios.post("http://localhost:8080/api/products", {
       title: this.state.title,
       price: parseFloat(this.state.price),
@@ -112,13 +82,6 @@ class ProductAdministrationComponent extends React.Component {
     })
       .then(this.context.refreshProducts)
       .then(() => this.props.history.push("/admin"));
-
-    // Axios.get("http://localhost:8080/api/products").then(response => {
-    //   if (response.status < 200 || 300 <= response.status)
-    //     throw new Error(`response code ${response.status}`);
-    //   const products = response.data;
-    //   this.context.setProducts(products.map(serverProductToClientProduct));
-    // });
   };
 
   handleSubmit = event => {
